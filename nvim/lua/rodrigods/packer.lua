@@ -11,7 +11,7 @@ return require('packer').startup(function(use)
 	  requires = { {'nvim-lua/plenary.nvim'} }
   }
 
-  use({ 
+  use({
 	  'rose-pine/neovim',
 	  as = 'rose-pine' ,
 	  config = function()
@@ -19,15 +19,16 @@ return require('packer').startup(function(use)
 	  end
   })
 
-  -- Treesitter
-  use('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
-  use('nvim-treesitter/playground')
-
   use('nvim-lua/plenary.nvim')
   use('theprimeagen/harpoon')
   use('mbbill/undotree')
   use('tpope/vim-fugitive')
 
+  -- treesitter
+  use('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
+  use('nvim-treesitter/playground')
+
+  -- lsp-zero
   use {
 	  'VonHeikemen/lsp-zero.nvim',
 	  branch = 'v2.x',
