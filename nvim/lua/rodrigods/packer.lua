@@ -96,6 +96,9 @@ return packer.startup(function(use)
     -- vim game
     use("ThePrimeAgen/vim-be-good")
 
+    -- golang
+    use("fatih/vim-go")
+
     if packer_bootstrap then
         require("packer").sync()
     end
