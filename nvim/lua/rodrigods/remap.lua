@@ -1,8 +1,8 @@
--- open file explorer
-vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
-
 -- set leader key to space
 vim.g.mapleader = " "
+
+-- open file explorer
+vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
 
 -- move visual blocks around
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")

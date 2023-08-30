@@ -3,11 +3,11 @@ local lsp = require("lsp-zero")
 lsp.preset("recommended")
 
 lsp.ensure_installed({
-    'tsserver',
-    'rust_analyzer',
-    'pyright',
     'gopls',
     'lua-language-server',
+    'pyright',
+    'rust_analyzer',
+    'tsserver',
 })
 
 -- Fix Undefined global 'vim'
@@ -15,7 +15,6 @@ lsp.nvim_workspace()
 
 
 local cmp = require('cmp')
-local cmp_select = { behavior = cmp.SelectBehavior.Select }
 local cmp_mappings = lsp.defaults.cmp_mappings({
     ["<C-k>"] = cmp.mapping.select_prev_item(), -- previous suggestion
     ["<C-j>"] = cmp.mapping.select_next_item(), -- next suggestion
@@ -53,6 +52,26 @@ lsp.on_attach(function(_, bufnr)
 end)
 
 lsp.setup()
+
+-- gopls
+local lspconfig = require('lspconfig')
+local util = require('lspconfig/util')
+
+lspconfig.gopls.setup {
+    cmd = {"gopls"},
+    filetypes = {"go", "gomod", "gowork", "gompl"},
+    root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+    settings = {
+        gopls = {
+            completeUnimported = true,
+            usePlaceholders = true,
+            analyses = {
+                unusedparams = true,
+            }
+        }
+    }
+}
+
 
 vim.diagnostic.config({
     virtual_text = true

@@ -28,13 +28,13 @@ end
 
 return packer.startup(function(use)
     -- Packer can manage itself
-    use 'wbthomason/packer.nvim'
+    use "wbthomason/packer.nvim"
 
     -- fuzzy finding
     use {
-        'nvim-telescope/telescope.nvim', tag = '0.1.2',
-        -- or                            , branch = '0.1.x',
-        requires = { { 'nvim-lua/plenary.nvim' } }
+        "nvim-telescope/telescope.nvim", tag = "0.1.2",
+        -- or                            , branch = "0.1.x",
+        requires = { { "nvim-lua/plenary.nvim" } }
     }
     use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" }) -- dependency for better sorting performance
 
@@ -43,32 +43,32 @@ return packer.startup(function(use)
 
     use("szw/vim-maximizer")             -- maximizes and restores current window
 
-    use('vim-airline/vim-airline')
+    use("vim-airline/vim-airline")
 
     -- git
-    use('tpope/vim-fugitive')
+    use("tpope/vim-fugitive")
     use("lewis6991/gitsigns.nvim") -- show line modifications on left hand side
 
     -- treesitter
-    use('nvim-treesitter/nvim-treesitter', { run = ':TSUpdate' })
-    use('nvim-treesitter/playground')
+    use("nvim-treesitter/nvim-treesitter", { run = ":TSUpdate" })
+    use("nvim-treesitter/playground")
 
     -- lsp-zero
     use {
-        'VonHeikemen/lsp-zero.nvim',
-        branch = 'v2.x',
+        "VonHeikemen/lsp-zero.nvim",
+        branch = "v2.x",
         requires = {
             -- LSP Support
-            { 'neovim/nvim-lspconfig' },             -- Required
-            { 'williamboman/mason.nvim' },           -- Optional
-            { 'williamboman/mason-lspconfig.nvim' }, -- Optional
+            { "neovim/nvim-lspconfig" },             -- Required
+            { "williamboman/mason.nvim" },           -- Optional
+            { "williamboman/mason-lspconfig.nvim" }, -- Optional
 
             -- autocompletion
-            { 'hrsh7th/nvim-cmp' },     -- Required
-            { 'hrsh7th/cmp-nvim-lsp' }, -- Required
-            { 'hrsh7th/cmp-buffer' },   -- Required
-            { 'hrsh7th/cmp-path' },     -- Required
-            { 'L3MON4D3/LuaSnip' },     -- Required
+            { "hrsh7th/nvim-cmp" },     -- Required
+            { "hrsh7th/cmp-nvim-lsp" }, -- Required
+            { "hrsh7th/cmp-buffer" },   -- Required
+            { "hrsh7th/cmp-path" },     -- Required
+            { "L3MON4D3/LuaSnip" },     -- Required
         }
     }
 
@@ -78,7 +78,20 @@ return packer.startup(function(use)
 
     -- formatting & linting
     use("jose-elias-alvarez/null-ls.nvim") -- configure formatters & linters
-    use("jayp0521/mason-null-ls.nvim")   -- bridges gap b/w mason & null-ls
+    use("jayp0521/mason-null-ls.nvim")     -- bridges gap b/w mason & null-ls
+
+    -- debugger
+    use("mfussenegger/nvim-dap")
+    use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
+    use {
+        "leoluz/nvim-dap-go",
+
+
+        ft = "go",
+        requires = {
+            { "mfussenegger/nvim-dap" },
+        },
+    }
 
     -- vim game
     use("ThePrimeAgen/vim-be-good")

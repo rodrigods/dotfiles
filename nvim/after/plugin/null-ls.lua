@@ -11,8 +11,13 @@ local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 null_ls.setup({
     -- setup formatters & linters
     sources = {
+        -- python
         null_ls.builtins.diagnostics.ruff,
         null_ls.builtins.formatting.black,
+
+        -- go
+        null_ls.builtins.formatting.gofmt,
+        null_ls.builtins.formatting.goimports_reviser,
     },
 
     -- configure format on save
