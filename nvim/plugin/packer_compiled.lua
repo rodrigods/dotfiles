@@ -79,6 +79,11 @@ _G.packer_plugins = {
     path = "/Users/rodrigod/.local/share/nvim/site/pack/packer/start/LuaSnip",
     url = "https://github.com/L3MON4D3/LuaSnip"
   },
+  catppuccin = {
+    loaded = true,
+    path = "/Users/rodrigod/.local/share/nvim/site/pack/packer/start/catppuccin",
+    url = "https://github.com/catppuccin/nvim"
+  },
   ["cmp-buffer"] = {
     loaded = true,
     path = "/Users/rodrigod/.local/share/nvim/site/pack/packer/start/cmp-buffer",
@@ -217,11 +222,6 @@ _G.packer_plugins = {
     loaded = true,
     path = "/Users/rodrigod/.local/share/nvim/site/pack/packer/start/vim-maximizer",
     url = "https://github.com/szw/vim-maximizer"
-  },
-  ["vim-nightfly-guicolors"] = {
-    loaded = true,
-    path = "/Users/rodrigod/.local/share/nvim/site/pack/packer/start/vim-nightfly-guicolors",
-    url = "https://github.com/bluz71/vim-nightfly-guicolors"
   }
 }
 

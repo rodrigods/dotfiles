@@ -38,8 +38,8 @@ return packer.startup(function(use)
     }
     use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" }) -- dependency for better sorting performance
 
-
-    use("bluz71/vim-nightfly-guicolors") -- preferred colorscheme
+    -- use("bluz71/vim-nightfly-guicolors") -- preferred colorscheme
+    use { "catppuccin/nvim", as = "catppuccin" }
 
     use("szw/vim-maximizer")             -- maximizes and restores current window
 
