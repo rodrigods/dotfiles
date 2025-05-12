@@ -1,77 +1,60 @@
-local lsp = require("lsp-zero")
+-- note: diagnostics are not exclusive to lsp servers
+-- so these can be global keybindings
+vim.keymap.set('n', '<leader>vd', '<cmd>lua vim.diagnostic.open_float()<cr>')
+vim.keymap.set('n', '[d', '<cmd>lua vim.diagnostic.goto_prev()<cr>')
+vim.keymap.set('n', ']d', '<cmd>lua vim.diagnostic.goto_next()<cr>') 
 
-lsp.preset("recommended")
+vim.api.nvim_create_autocmd('LspAttach', {
+  desc = 'LSP actions',
+  callback = function(event)
+    local opts = {buffer = event.buf}
 
-lsp.ensure_installed({
-    'gopls',
-    'lua-language-server',
-    'pyright',
-    'ruff',
-    'rust_analyzer',
-    'tsserver',
+    -- these will be buffer-local keybindings
+    -- because they only work if you have an active language server
+    vim.keymap.set('n', 'gd', function() vim.lsp.buf.definition() end, opts)
+    vim.keymap.set('n', 'gD', function() vim.lsp.buf.declaration() end, opts)
+    vim.keymap.set('n', 'K', function() vim.lsp.buf.hover() end, opts)
+    vim.keymap.set('n', '<leader>ws', function() vim.lsp.buf.workspace_symbol() end, opts)
+    vim.keymap.set('n', '<leader>vd', function() vim.diagnostic.open_float() end, opts)
+    vim.keymap.set('n', '[d', function() vim.diagnostic.goto_next() end, opts)
+    vim.keymap.set('n', ']d', function() vim.diagnostic.goto_prev() end, opts)
+    vim.keymap.set('n', '<leader>ca', function() vim.lsp.buf.code_action() end, opts)
+    vim.keymap.set('n', '<leader>rr', function() vim.lsp.buf.references() end, opts)
+    vim.keymap.set('n', '<leader>rn', function() vim.lsp.buf.rename() end, opts)
+    vim.keymap.set('i', '<C-h>', function() vim.lsp.buf.signature_help() end, opts)
+  end
 })
 
--- Fix Undefined global 'vim'
-lsp.nvim_workspace()
+local lsp_capabilities = require('cmp_nvim_lsp').default_capabilities()
 
+require('mason').setup({})
+require('mason-lspconfig').setup({
+  ensure_installed = {},
+  handlers = {
+    function(server_name)
+      require('lspconfig')[server_name].setup({
+        capabilities = lsp_capabilities,
+      })
+    end,
+  },
+})
 
 local cmp = require('cmp')
-local cmp_mappings = lsp.defaults.cmp_mappings({
-    ["<C-k>"] = cmp.mapping.select_prev_item(), -- previous suggestion
-    ["<C-j>"] = cmp.mapping.select_next_item(), -- next suggestion
-    ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-    ["<C-f>"] = cmp.mapping.scroll_docs(4),
-    ["<C-Space>"] = cmp.mapping.complete(), -- show completion suggestions
-    ["<C-e>"] = cmp.mapping.abort(),        -- close completion window
-    ["<CR>"] = cmp.mapping.confirm({ select = true }),
-})
 
-cmp_mappings['<Tab>'] = nil
-cmp_mappings['<S-Tab>'] = nil
+cmp.setup({
+  sources = {
+    {name = 'nvim_lsp'},
+  },
+  mapping = cmp.mapping.preset.insert({
+    -- Enter key confirms completion item
+    ['<CR>'] = cmp.mapping.confirm({select = true}),
 
-lsp.setup_nvim_cmp({
-    mapping = cmp_mappings
-})
-
-lsp.on_attach(function(_, bufnr)
-    -- keybind options
-    local opts = { buffer = bufnr, remap = false }
-
-    -- set keybinds
-    vim.keymap.set("n", "gd", function() vim.lsp.buf.definition() end, opts)
-    vim.keymap.set("n", "K", function() vim.lsp.buf.hover() end, opts)
-    vim.keymap.set("n", "<leader>ws", function() vim.lsp.buf.workspace_symbol() end, opts)
-    vim.keymap.set("n", "<leader>d", function() vim.diagnostic.open_float() end, opts)
-    vim.keymap.set("n", "[d", function() vim.diagnostic.goto_next() end, opts)
-    vim.keymap.set("n", "]d", function() vim.diagnostic.goto_prev() end, opts)
-    vim.keymap.set("n", "<leader>ca", function() vim.lsp.buf.code_action() end, opts)
-    vim.keymap.set("n", "<leader>rr", function() vim.lsp.buf.references() end, opts)
-    vim.keymap.set("n", "<leader>rn", function() vim.lsp.buf.rename() end, opts)
-    vim.keymap.set("i", "<C-h>", function() vim.lsp.buf.signature_help() end, opts)
-end)
-
-lsp.setup()
-
--- gopls
-local lspconfig = require('lspconfig')
-local util = require('lspconfig/util')
-
-lspconfig.gopls.setup {
-    cmd = {"gopls"},
-    filetypes = {"go", "gomod", "gowork", "gompl"},
-    root_dir = util.root_pattern("go.work", "go.mod", ".git"),
-    settings = {
-        gopls = {
-            completeUnimported = true,
-            usePlaceholders = true,
-            analyses = {
-                unusedparams = true,
-            }
-        }
-    }
-}
-
-
-vim.diagnostic.config({
-    virtual_text = true
+    -- Ctrl + space triggers completion menu
+    ['<C-Space>'] = cmp.mapping.complete(),
+  }),
+  snippet = {
+    expand = function(args)
+      require('luasnip').lsp_expand(args.body)
+    end,
+  },
 })

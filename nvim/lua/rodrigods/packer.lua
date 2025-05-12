@@ -1,105 +1,45 @@
-local ensure_packer = function()
-    local fn = vim.fn
-    local install_path = fn.stdpath("data") .. "/site/pack/packer/start/packer.nvim"
-    if fn.empty(fn.glob(install_path)) > 0 then
-        fn.system({ "git", "clone", "--depth", "1", "https://github.com/wbthomason/packer.nvim", install_path })
-        vim.cmd([[packadd packer.nvim]])
-        return true
-    end
-    return false
-end
-local packer_bootstrap = ensure_packer() -- true if packer was just installed
+-- This file can be loaded by calling `lua require('plugins')` from your init.vim
 
--- autocommand that reloads neovim and installs/updates/removes plugins
--- when file is saved
-vim.cmd([[
-  augroup packer_user_config
-    autocmd!
-    autocmd BufWritePost plugins-setup.lua source <afile> | PackerSync
-  augroup end
-]])
+return require('packer').startup(function(use)
+	-- Packer can manage itself
+	use 'wbthomason/packer.nvim'
 
--- import packer safely
-local status, packer = pcall(require, "packer")
-if not status then
-    return
-end
+	-- fuzzy finder: telescope
+	use {
+		'nvim-telescope/telescope.nvim', tag = '0.1.8',
+		requires = { {'nvim-lua/plenary.nvim'} }
+	}
 
+	-- colorscheme
+	use { "catppuccin/nvim", as = "catppuccin" }
 
-return packer.startup(function(use)
-    -- Packer can manage itself
-    use "wbthomason/packer.nvim"
+	-- treesitter: file changes trees, syntax highlight, etc
+	use('nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'})
+	use('nvim-treesitter/playground')
 
-    -- fuzzy finding
-    use {
-        "nvim-telescope/telescope.nvim", tag = "0.1.2",
-        -- or                            , branch = "0.1.x",
-        requires = { { "nvim-lua/plenary.nvim" } }
-    }
-    use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" }) -- dependency for better sorting performance
+	-- harpoon: file navigation
+	use('theprimeagen/harpoon')
 
-    -- use("bluz71/vim-nightfly-guicolors") -- preferred colorscheme
-    use { "catppuccin/nvim", as = "catppuccin" }
+	-- undootree
+	use('mbbill/undotree')
 
-    use("szw/vim-maximizer")             -- maximizes and restores current window
+	-- fugitive: git
+	use('tpope/vim-fugitive')
 
-    use("vim-airline/vim-airline")
+	-- vim/tmux window nav
+	use('christoomey/vim-tmux-navigator')
 
-    -- git
-    use("tpope/vim-fugitive")
-    use("lewis6991/gitsigns.nvim") -- show line modifications on left hand side
+	-- LSP
+	use('neovim/nvim-lspconfig')
+	use('williamboman/mason.nvim')
+	use('williamboman/mason-lspconfig.nvim')
 
-    -- treesitter
-    use("nvim-treesitter/nvim-treesitter", { run = ":TSUpdate" })
-    use("nvim-treesitter/playground")
+	use('hrsh7th/nvim-cmp')
+	use('hrsh7th/cmp-nvim-lsp')
+	use('hrsh7th/cmp-buffer')
+	use('hrsh7th/cmp-cmdline')
 
-    -- lsp-zero
-    use {
-        "VonHeikemen/lsp-zero.nvim",
-        branch = "v2.x",
-        requires = {
-            -- LSP Support
-            { "neovim/nvim-lspconfig" },             -- Required
-            { "williamboman/mason.nvim" },           -- Optional
-            { "williamboman/mason-lspconfig.nvim" }, -- Optional
-
-            -- autocompletion
-            { "hrsh7th/nvim-cmp" },     -- Required
-            { "hrsh7th/cmp-nvim-lsp" }, -- Required
-            { "hrsh7th/cmp-buffer" },   -- Required
-            { "hrsh7th/cmp-path" },     -- Required
-            { "L3MON4D3/LuaSnip" },     -- Required
-        }
-    }
-
-    -- auto closing
-    use("windwp/nvim-autopairs")                                 -- autoclose parens, brackets, quotes, etc...
-    use({ "windwp/nvim-ts-autotag", after = "nvim-treesitter" }) -- autoclose tags
-
-    -- formatting & linting
-    use("jose-elias-alvarez/null-ls.nvim") -- configure formatters & linters
-    use("jayp0521/mason-null-ls.nvim")     -- bridges gap b/w mason & null-ls
-
-    -- debugger
-    use("mfussenegger/nvim-dap")
-    use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
-    use {
-        "leoluz/nvim-dap-go",
-
-
-        ft = "go",
-        requires = {
-            { "mfussenegger/nvim-dap" },
-        },
-    }
-
-    -- vim game
-    use("ThePrimeAgen/vim-be-good")
-
-    -- golang
-    use("fatih/vim-go")
-
-    if packer_bootstrap then
-        require("packer").sync()
-    end
+	use('L3MON4D3/LuaSnip')
+	use('saadparwaiz1/cmp_luasnip')
+	use('j-hui/fidget.nvim')
 end)
