@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neovim + Tmux Cheat Sheet - rodrigods</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            background: #1e1e2e;
+            color: #cdd6f4;
+            line-height: 1.6;
+            font-size: 14px;
+            padding: 20px;
+            max-width: 800px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #45475a;
+            padding-bottom: 20px;
+        }
+
+        h1 {
+            color: #f38ba8;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #a6adc8;
+            font-size: 16px;
+        }
+
+        .search-container {
+            margin-bottom: 25px;
+            position: sticky;
+            top: 0;
+            background: #1e1e2e;
+            padding: 10px 0;
+            z-index: 100;
+        }
+
+        #searchInput {
+            width: 100%;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: 2px solid #45475a;
+            border-radius: 8px;
+            background: #313244;
+            color: #cdd6f4;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        #searchInput:focus {
+            border-color: #f38ba8;
+        }
+
+        #searchInput::placeholder {
+            color: #6c7086;
+        }
+
+        .category {
+            margin-bottom: 30px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .category-header {
+            background: #45475a;
+            padding: 15px 20px;
+            font-weight: bold;
+            font-size: 18px;
+            color: #f9e2af;
+            border-left: 4px solid #f38ba8;
+        }
+
+        .category-content {
+            background: #313244;
+        }
+
+        .keymap-row {
+            display: flex;
+            padding: 12px 20px;
+            border-bottom: 1px solid #45475a;
+            transition: background-color 0.2s ease;
+        }
+
+        .keymap-row:hover {
+            background: #45475a;
+        }
+
+        .keymap-row:last-child {
+            border-bottom: none;
+        }
+
+        .keymap {
+            flex: 0 0 120px;
+            font-weight: bold;
+            color: #fab387;
+            font-family: inherit;
+        }
+
+        .description {
+            flex: 1;
+            color: #cdd6f4;
+            padding-left: 20px;
+        }
+
+        .mode {
+            flex: 0 0 40px;
+            color: #94e2d5;
+            font-size: 12px;
+            text-align: center;
+            align-self: center;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .highlight {
+            background-color: #f9e2af;
+            color: #1e1e2e;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+
+        .leader-note {
+            background: #585b70;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            border-left: 4px solid #94e2d5;
+        }
+
+        .leader-note strong {
+            color: #94e2d5;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+                font-size: 12px;
+            }
+            
+            .keymap {
+                flex: 0 0 100px;
+            }
+            
+            .description {
+                padding-left: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🚀 Neovim + Tmux Cheat Sheet</h1>
+        <div class="subtitle">Neovim + Tmux Reference - rodrigods config</div>
+    </div>
+
+    <div class="leader-note">
+        <strong>Leader Key:</strong> Space (<code>&lt;Space&gt;</code>) • <strong>Tmux Prefix:</strong> Ctrl+A (<code>&lt;C-a&gt;</code>)<br>
+        <strong>Mode Indicators:</strong> N=Normal, V=Visual, I=Insert, X=Visual Block, T=Tmux, C=Copy Mode, CMD=Terminal Command
+    </div>
+
+    <div class="search-container">
+        <input type="text" id="searchInput" placeholder="🔍 Search keymaps... (try 'telescope', 'tmux', 'session', 'split', etc.)" />
+    </div>
+
+    <div class="category" data-category="core">
+        <div class="category-header">🎯 Core Navigation & Editing</div>
+        <div class="category-content">
+            <div class="keymap-row" data-search="leader pv explorer file">
+                <div class="mode">N</div>
+                <div class="keymap">&lt;leader&gt;pv</div>
+                <div class="description">Open file explorer (Ex command)</div>
+            </div>
+            <div class="keymap-row" data-search="J append line cursor">
+                <div class="mode">N</div>
+                <div class="keymap">J</div>
+                <div class="description">Append line below without moving cursor</div>
+            </div>
+            <div class="keymap-row" data-search="J K move visual selection">
+                <div class="mode">V</div>
+                <div class="keymap">J / K</div>
+                <div class="description">Move visual selection up/down</div>
+            </div>
+            <div class="keymap-row" data-search="n N search center cursor">
+                <div class="mode">N</div>
+                <div class="keymap">n / N</div>
+                <div class="description">Search next/previous and center cursor</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category" data-category="clipboard">
+        <div class="category-header">📋 Clipboard & Paste</div>
+        <div class="category-content">
+            <div class="keymap-row" data-search="leader p paste buffer">
+                <div class="mode">X</div>
+                <div class="keymap">&lt;leader&gt;p</div>
+                <div class="description">Paste without losing current buffer (greatest remap!)</div>
+            </div>
+            <div class="keymap-row" data-search="leader y yank clipboard system">
+                <div class="mode">N/V</div>
+                <div class="keymap">&lt;leader&gt;y</div>
+                <div class="description">Yank to system clipboard</div>
+            </div>
+            <div class="keymap-row" data-search="leader Y yank line clipboard">
+                <div class="mode">N</div>
+                <div class="keymap">&lt;leader&gt;Y</div>
+                <div class="description">Yank line to system clipboard</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category" data-category="telescope">
+        <div class="category-header">🔭 Telescope (Fuzzy Finder)</div>
+        <div class="category-content">
+            <div class="keymap-row" data-search="leader pf find files project">
+                <div class="mode">N</div>
+                <div class="keymap">&lt;leader&gt;pf</div>
+                <div class="description">Find files in project</div>
+            </div>
+            <div class="keymap-row" data-search="ctrl p git files">
+                <div class="mode">N</div>
+                <div class="keymap">&lt;C-p&gt;</div>
+                <div class="description">Find git files</div>
+            </div>
+            <div class="keymap-row" data-search="leader ps live grep search">
+                <div class="mode">N</div>
+                <div class="keymap">&lt;leader&gt;ps</div>
+                <div class="description">Live grep search in project</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category" data-category="harpoon">
+        <div class="category-header">🎯 Harpoon (File Navigation)</div>
+        <div class="category-content">
+            <div class="keymap-row" data-search="leader a add harpoon mark">
+                <div class="mode">N</div>
+                <div class="keymap">&lt;leader&gt;a</div>
+                <div class="description">Add current file to harpoon</div>
+            </div>
+            <div class="keymap-row" data-search="ctrl e harpoon menu toggle">
+                <div class="mode">N</div>
+                <div class="keymap">&lt;C-e&gt;</div>
+                <div class="description">Toggle harpoon quick menu</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category" data-category="git">
+        <div class="category-header">🌿 Git (Fugitive)</div>
+        <div class="category-content">
+            <div class="keymap-row" data-search="leader gs git status fugitive">
+                <div class="mode">N</div>
+                <div class="keymap">&lt;leader&gt;gs</div>
+                <div class="description">Open Git status (fugitive)</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category" data-category="undotree">
+        <div class="category-header">🌳 Undo Tree</div>
+        <div class="category-content">
+            <div class="keymap-row" data-search="leader u undotree toggle">
+                <div class="mode">N</div>
+                <div class="keymap">&lt;leader&gt;u</div>
+                <div class="description">Toggle undo tree</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category" data-category="lsp">
+        <div class="category-header">🧠 LSP (Language Server)</div>
+        <div class="category-content">
+            <div class="keymap-row" data-search="gd go definition">
+                <div class="mode">N</div>
+                <div class="keymap">gd</div>
+                <div class="description">Go to definition</div>
+            </div>
+            <div class="keymap-row" data-search="gD go declaration">
+                <div class="mode">N</div>
+                <div class="keymap">gD</div>
+                <div class="description">Go to declaration</div>
+            </div>
+            <div class="keymap-row" data-search="K hover documentation">
+                <div class="mode">N</div>
+                <div class="keymap">K</div>
+                <div class="description">Show hover documentation</div>
+            </div>
+            <div class="keymap-row" data-search="leader ws workspace symbol">
+                <div class="mode">N</div>
+                <div class="keymap">&lt;leader&gt;ws</div>
+                <div class="description">Workspace symbol search</div>
+            </div>
+            <div class="keymap-row" data-search="leader ca code action">
+                <div class="mode">N</div>
+                <div class="keymap">&lt;leader&gt;ca</div>
+                <div class="description">Code actions</div>
+            </div>
+            <div class="keymap-row" data-search="leader rr references">
+                <div class="mode">N</div>
+                <div class="keymap">&lt;leader&gt;rr</div>
+                <div class="description">Show references</div>
+            </div>
+            <div class="keymap-row" data-search="leader rn rename">
+                <div class="mode">N</div>
+                <div class="keymap">&lt;leader&gt;rn</div>
+                <div class="description">Rename symbol</div>
+            </div>
+            <div class="keymap-row" data-search="ctrl h signature help">
+                <div class="mode">I</div>
+                <div class="keymap">&lt;C-h&gt;</div>
+                <div class="description">Signature help</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category" data-category="diagnostics">
+        <div class="category-header">🩺 Diagnostics</div>
+        <div class="category-content">
+            <div class="keymap-row" data-search="leader vd diagnostic float">
+                <div class="mode">N</div>
+                <div class="keymap">&lt;leader&gt;vd</div>
+                <div class="description">Open diagnostic float</div>
+            </div>
+            <div class="keymap-row" data-search="[ ] d diagnostic next previous">
+                <div class="mode">N</div>
+                <div class="keymap">[d / ]d</div>
+                <div class="description">Go to next/previous diagnostic</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category" data-category="completion">
+        <div class="category-header">✨ Completion</div>
+        <div class="category-content">
+            <div class="keymap-row" data-search="enter confirm completion">
+                <div class="mode">I</div>
+                <div class="keymap">&lt;CR&gt;</div>
+                <div class="description">Confirm completion item</div>
+            </div>
+            <div class="keymap-row" data-search="ctrl space completion menu">
+                <div class="mode">I</div>
+                <div class="keymap">&lt;C-Space&gt;</div>
+                <div class="description">Trigger completion menu</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category" data-category="navigation">
+        <div class="category-header">🧭 Window/Pane Navigation</div>
+        <div class="category-content">
+            <div class="keymap-row" data-search="ctrl h j k l navigation tmux vim">
+                <div class="mode">N</div>
+                <div class="keymap">&lt;C-h/j/k/l&gt;</div>
+                <div class="description">Navigate between vim windows/tmux panes</div>
+            </div>
+            <div class="keymap-row" data-search="ctrl backslash previous navigation">
+                <div class="mode">N</div>
+                <div class="keymap">&lt;C-\&gt;</div>
+                <div class="description">Navigate to previous vim window/tmux pane</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category" data-category="tmux-session">
+        <div class="category-header">📺 Tmux Session Management</div>
+        <div class="category-content">
+            <div class="keymap-row" data-search="tmux new session start">
+                <div class="mode">CMD</div>
+                <div class="keymap">tmux</div>
+                <div class="description">Start new tmux session</div>
+            </div>
+            <div class="keymap-row" data-search="tmux new session name">
+                <div class="mode">CMD</div>
+                <div class="keymap">tmux new -s &lt;name&gt;</div>
+                <div class="description">Start new named session</div>
+            </div>
+            <div class="keymap-row" data-search="tmux attach session">
+                <div class="mode">CMD</div>
+                <div class="keymap">tmux a -t &lt;name&gt;</div>
+                <div class="description">Attach to named session</div>
+            </div>
+            <div class="keymap-row" data-search="tmux attach last session">
+                <div class="mode">CMD</div>
+                <div class="keymap">tmux a</div>
+                <div class="description">Attach to last session</div>
+            </div>
+            <div class="keymap-row" data-search="tmux list sessions">
+                <div class="mode">CMD</div>
+                <div class="keymap">tmux ls</div>
+                <div class="description">List all sessions</div>
+            </div>
+            <div class="keymap-row" data-search="tmux kill session">
+                <div class="mode">CMD</div>
+                <div class="keymap">tmux kill-session -t &lt;name&gt;</div>
+                <div class="description">Kill named session</div>
+            </div>
+            <div class="keymap-row" data-search="tmux detach session">
+                <div class="mode">CMD</div>
+                <div class="keymap">tmux detach</div>
+                <div class="description">Detach from current session</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category" data-category="tmux-prefix">
+        <div class="category-header">🎛️ Tmux Keybindings (Prefix: Ctrl+A)</div>
+        <div class="category-content">
+            <div class="keymap-row" data-search="ctrl a prefix send">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; &lt;C-a&gt;</div>
+                <div class="description">Send prefix to nested session</div>
+            </div>
+            <div class="keymap-row" data-search="detach session exit">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; d</div>
+                <div class="description">Detach from session</div>
+            </div>
+            <div class="keymap-row" data-search="split horizontal pane">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; |</div>
+                <div class="description">Split window horizontally</div>
+            </div>
+            <div class="keymap-row" data-search="split vertical pane">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; -</div>
+                <div class="description">Split window vertically</div>
+            </div>
+            <div class="keymap-row" data-search="reload refresh config">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; r</div>
+                <div class="description">Reload tmux config</div>
+            </div>
+            <div class="keymap-row" data-search="maximize pane zoom">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; m</div>
+                <div class="description">Maximize/minimize current pane</div>
+            </div>
+            <div class="keymap-row" data-search="resize pane hjkl">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; h/j/k/l</div>
+                <div class="description">Resize pane (repeatable)</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category" data-category="tmux-windows">
+        <div class="category-header">🪟 Tmux Windows & Panes</div>
+        <div class="category-content">
+            <div class="keymap-row" data-search="new window create">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; c</div>
+                <div class="description">Create new window</div>
+            </div>
+            <div class="keymap-row" data-search="next window">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; n</div>
+                <div class="description">Next window</div>
+            </div>
+            <div class="keymap-row" data-search="previous window">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; p</div>
+                <div class="description">Previous window</div>
+            </div>
+            <div class="keymap-row" data-search="window number">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; 0-9</div>
+                <div class="description">Switch to window by number</div>
+            </div>
+            <div class="keymap-row" data-search="rename window">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; ,</div>
+                <div class="description">Rename current window</div>
+            </div>
+            <div class="keymap-row" data-search="close kill window">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; &</div>
+                <div class="description">Kill current window</div>
+            </div>
+            <div class="keymap-row" data-search="close kill pane">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; x</div>
+                <div class="description">Kill current pane</div>
+            </div>
+            <div class="keymap-row" data-search="last window previous">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; l</div>
+                <div class="description">Switch to last window</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category" data-category="tmux-copy">
+        <div class="category-header">📋 Tmux Copy Mode (Vi-style)</div>
+        <div class="category-content">
+            <div class="keymap-row" data-search="copy mode enter scroll">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; [</div>
+                <div class="description">Enter copy mode</div>
+            </div>
+            <div class="keymap-row" data-search="visual selection start">
+                <div class="mode">C</div>
+                <div class="keymap">v</div>
+                <div class="description">Start visual selection</div>
+            </div>
+            <div class="keymap-row" data-search="yank copy selection">
+                <div class="mode">C</div>
+                <div class="keymap">y</div>
+                <div class="description">Copy selection</div>
+            </div>
+            <div class="keymap-row" data-search="paste buffer">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; ]</div>
+                <div class="description">Paste from buffer</div>
+            </div>
+            <div class="keymap-row" data-search="exit copy mode">
+                <div class="mode">C</div>
+                <div class="keymap">q / Esc</div>
+                <div class="description">Exit copy mode</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="category" data-category="tmux-plugins">
+        <div class="category-header">🔌 Tmux Plugins</div>
+        <div class="category-content">
+            <div class="keymap-row" data-search="install plugins tpm">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; I</div>
+                <div class="description">Install plugins (TPM)</div>
+            </div>
+            <div class="keymap-row" data-search="update plugins tpm">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; U</div>
+                <div class="description">Update plugins (TPM)</div>
+            </div>
+            <div class="keymap-row" data-search="uninstall plugins tpm">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; alt-u</div>
+                <div class="description">Uninstall plugins (TPM)</div>
+            </div>
+            <div class="keymap-row" data-search="resurrect save session">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; &lt;C-s&gt;</div>
+                <div class="description">Save session (resurrect)</div>
+            </div>
+            <div class="keymap-row" data-search="resurrect restore session">
+                <div class="mode">T</div>
+                <div class="keymap">&lt;C-a&gt; &lt;C-r&gt;</div>
+                <div class="description">Restore session (resurrect)</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const searchInput = document.getElementById('searchInput');
+        const keymapRows = document.querySelectorAll('.keymap-row');
+        const categories = document.querySelectorAll('.category');
+
+        function highlightText(text, searchTerm) {
+            if (!searchTerm) return text;
+            const regex = new RegExp(`(${searchTerm})`, 'gi');
+            return text.replace(regex, '<span class="highlight">$1</span>');
+        }
+
+        function clearHighlights() {
+            keymapRows.forEach(row => {
+                const keymap = row.querySelector('.keymap');
+                const description = row.querySelector('.description');
+                keymap.innerHTML = keymap.textContent;
+                description.innerHTML = description.textContent;
+            });
+        }
+
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            
+            if (!searchTerm) {
+                // Show all rows and categories
+                keymapRows.forEach(row => row.classList.remove('hidden'));
+                categories.forEach(category => category.classList.remove('hidden'));
+                clearHighlights();
+                return;
+            }
+
+            let hasVisibleRows = {};
+            
+            keymapRows.forEach(row => {
+                const searchData = row.getAttribute('data-search').toLowerCase();
+                const keymap = row.querySelector('.keymap').textContent.toLowerCase();
+                const description = row.querySelector('.description').textContent.toLowerCase();
+                
+                const isVisible = searchData.includes(searchTerm) || 
+                                keymap.includes(searchTerm) || 
+                                description.includes(searchTerm);
+                
+                if (isVisible) {
+                    row.classList.remove('hidden');
+                    const categoryElement = row.closest('.category');
+                    const categoryName = categoryElement.getAttribute('data-category');
+                    hasVisibleRows[categoryName] = true;
+                    
+                    // Highlight matching text
+                    const keymapElement = row.querySelector('.keymap');
+                    const descriptionElement = row.querySelector('.description');
+                    keymapElement.innerHTML = highlightText(keymapElement.textContent, searchTerm);
+                    descriptionElement.innerHTML = highlightText(descriptionElement.textContent, searchTerm);
+                } else {
+                    row.classList.add('hidden');
+                }
+            });
+
+            // Show/hide categories based on whether they have visible rows
+            categories.forEach(category => {
+                const categoryName = category.getAttribute('data-category');
+                if (hasVisibleRows[categoryName]) {
+                    category.classList.remove('hidden');
+                } else {
+                    category.classList.add('hidden');
+                }
+            });
+        }
+
+        searchInput.addEventListener('input', performSearch);
+        
+        // Focus search on page load
+        window.addEventListener('load', () => {
+            searchInput.focus();
+        });
+
+        // Allow Escape to clear search
+        searchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                searchInput.value = '';
+                performSearch();
+            }
+        });
+    </script>
+</body>
+</html>
